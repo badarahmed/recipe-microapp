@@ -4,7 +4,8 @@ var RecipeApp = React.createClass({
 
 	getInitialState: function() {	
 		return {
-			search: ''
+			search: '',
+			checked: new Array(this.props.recipes.length)
 		};
 	},
 
@@ -12,11 +13,40 @@ var RecipeApp = React.createClass({
 		this.setState({search: event.target.value});
 	},
 
-	renderRecipe: function(recipe) {
+	handleChecked: function(event) {
+		var checked = this.state.checked;
+		var id = event.target.id;
+		checked[id] = event.target.checked;
+		this.setState({checked: checked});
+	},
+
+	renderDistinctIngredients: function() {
+		//calculate distinct sorted array from state (of selected checkboxes)
+		//console.log(this.state.checked);
+		var checkedArr = this.state.checked;
+		var allIngredients = [];
+		var _this = this;
+		checkedArr.map(function(checked, index) {
+			if(checked)
+				allIngredients.push(_this.props.recipes[index].ingredients);
+		});
+
+		allIngredients = _.flatten(allIngredients);
+		allIngredients = _.uniq(allIngredients);
+		allIngredients.sort();
+
+		return (
+			<ol>
+				{allIngredients.map(function(ing) { return (<li>{ing}</li>) })}
+			</ol>
+		);
+	},
+
+	renderRecipe: function(recipe, index) {
 		if(this.state.search == '') {
 			return (
 				<tr>
-					<td> <input type="checkbox" /> </td>
+					<td> <input id={index} type="checkbox" checked={this.state.checked[index]} onChange={this.handleChecked} /> </td>
 					<td>{recipe.name}</td>
 					<td>{recipe.type}</td>
 					<td>{recipe.cook_time}</td>
@@ -25,11 +55,11 @@ var RecipeApp = React.createClass({
 			);
 		} else {
 			var _this = this;
-			var show = _.find(recipe.ingredients, 
+			var show = _.find(recipe.ingredients,
 				function(ing) { 
 					return ing.toLowerCase().indexOf(_this.state.search.toLowerCase()) > -1  
 				});
-			
+
 			if(show) {
 				return (
 					<tr>
@@ -47,24 +77,32 @@ var RecipeApp = React.createClass({
 	render: function() {
 		return (
 			<div>
-				<div id="search">
+				<div id="search" className="row">
 					<input type="text" className="form-control" id="searchBox" placeholder="Search ..." value={this.state.search} onChange={this.handleChange} />
 				</div>
-				<div>
-					<table className="table">
-						<thead>
-							<tr>
-								<th></th>
-								<th>Recipe</th>
-								<th>Type</th>
-								<th>Cook Time</th>
-								<th>Ingredients</th>
-							</tr>
-						</thead>
-						<tbody>
-							{this.props.recipes.map(this.renderRecipe)}
-						</tbody>
-					</table>
+
+				<div className="row">
+					<div className="col-md-7">
+						<table className="table">
+							<thead>
+								<tr>
+									<th></th>
+									<th>Recipe</th>
+									<th>Type</th>
+									<th>Cook Time</th>
+									<th>Ingredients</th>
+								</tr>
+							</thead>
+							<tbody>
+								{this.props.recipes.map(this.renderRecipe)}
+							</tbody>
+						</table>
+					</div>
+
+					<div className="col-md-2 pull-right">
+						<b>Distinct Ingredients</b>
+						{this.renderDistinctIngredients()}
+					</div>
 				</div>
 			</div>
 		);
