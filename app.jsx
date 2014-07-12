@@ -20,16 +20,24 @@ var RecipeApp = React.createClass({
 					<td>{recipe.name}</td>
 					<td>{recipe.type}</td>
 					<td>{recipe.cook_time}</td>
+					<td>{recipe.ingredients.map(function(i) { return (<span className="label label-default">{i}</span>) })}</td>
 				</tr>
 			);
 		} else {
-			if(recipe.name.toLowerCase().indexOf(this.state.search.toLowerCase()) > -1) {
+			var _this = this;
+			var show = _.find(recipe.ingredients, 
+				function(ing) { 
+					return ing.toLowerCase().indexOf(_this.state.search.toLowerCase()) > -1  
+				});
+			
+			if(show) {
 				return (
 					<tr>
 						<td> <input type="checkbox" /> </td>
 						<td>{recipe.name}</td>
 						<td>{recipe.type}</td>
 						<td>{recipe.cook_time}</td>
+						<td>{recipe.ingredients.map(function(i) { return (<span className="label label-default">{i}</span>) })}</td>
 					</tr>
 				);
 			}
@@ -50,6 +58,7 @@ var RecipeApp = React.createClass({
 								<th>Recipe</th>
 								<th>Type</th>
 								<th>Cook Time</th>
+								<th>Ingredients</th>
 							</tr>
 						</thead>
 						<tbody>

@@ -19,17 +19,21 @@ var RecipeApp = React.createClass({displayName: 'RecipeApp',
 					React.DOM.td(null,  " ", React.DOM.input( {type:"checkbox"} ), " " ),
 					React.DOM.td(null, recipe.name),
 					React.DOM.td(null, recipe.type),
-					React.DOM.td(null, recipe.cook_time)
+					React.DOM.td(null, recipe.cook_time),
+					React.DOM.td(null, recipe.ingredients.map(function(i) { return (React.DOM.span( {className:"label label-default"}, i)) }))
 				)
 			);
 		} else {
-			if(recipe.name.toLowerCase().indexOf(this.state.search.toLowerCase()) > -1) {
+			var _this = this;
+			var show = _.find(recipe.ingredients, function(ing) { return ing.toLowerCase().indexOf(_this.state.search.toLowerCase()) > -1  });
+			if(show) {
 				return (
 					React.DOM.tr(null, 
 						React.DOM.td(null,  " ", React.DOM.input( {type:"checkbox"} ), " " ),
 						React.DOM.td(null, recipe.name),
 						React.DOM.td(null, recipe.type),
-						React.DOM.td(null, recipe.cook_time)
+						React.DOM.td(null, recipe.cook_time),
+						React.DOM.td(null, recipe.ingredients.map(function(i) { return (React.DOM.span( {className:"label label-default"}, i)) }))
 					)
 				);
 			}
@@ -49,7 +53,8 @@ var RecipeApp = React.createClass({displayName: 'RecipeApp',
 								React.DOM.th(null),
 								React.DOM.th(null, "Recipe"),
 								React.DOM.th(null, "Type"),
-								React.DOM.th(null, "Cook Time")
+								React.DOM.th(null, "Cook Time"),
+								React.DOM.th(null, "Ingredients")
 							)
 						),
 						React.DOM.tbody(null, 
