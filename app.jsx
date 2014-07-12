@@ -9,6 +9,13 @@ var RecipeApp = React.createClass({
 		};
 	},
 
+	componentWillMount: function() {
+		if (localStorage["checked"] != null) {
+			var checked = JSON.parse(localStorage["checked"]);
+			this.setState({checked: checked});
+		}
+	},
+
 	handleChange: function(event) {
 		this.setState({search: event.target.value});
 	},
@@ -18,11 +25,12 @@ var RecipeApp = React.createClass({
 		var id = event.target.id;
 		checked[id] = event.target.checked;
 		this.setState({checked: checked});
+
+		localStorage["checked"] = JSON.stringify(checked);
 	},
 
 	renderDistinctIngredients: function() {
 		//calculate distinct sorted array from state (of selected checkboxes)
-		//console.log(this.state.checked);
 		var checkedArr = this.state.checked;
 		var allIngredients = [];
 		var _this = this;
@@ -63,7 +71,7 @@ var RecipeApp = React.createClass({
 			if(show) {
 				return (
 					<tr>
-						<td> <input type="checkbox" /> </td>
+						<td> <input id={index} type="checkbox" checked={this.state.checked[index]} onChange={this.handleChecked} /> </td>
 						<td>{recipe.name}</td>
 						<td>{recipe.type}</td>
 						<td>{recipe.cook_time}</td>
