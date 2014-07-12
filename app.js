@@ -4,37 +4,60 @@ var RecipeApp = React.createClass({displayName: 'RecipeApp',
 
 	getInitialState: function() {	
 		return {
-			x: false
+			search: ''
 		};
 	},
 
+	handleChange: function(event) {
+		this.setState({search: event.target.value});
+	},
+
 	renderRecipe: function(recipe) {
-		return (
-			React.DOM.tr(null, 
-				React.DOM.td(null,  " ", React.DOM.input( {type:"checkbox"} ), " " ),
-				React.DOM.td(null, recipe.name),
-				React.DOM.td(null, recipe.type),
-				React.DOM.td(null, recipe.cook_time)
-			)
-		);
+		if(this.state.search == '') {
+			return (
+				React.DOM.tr(null, 
+					React.DOM.td(null,  " ", React.DOM.input( {type:"checkbox"} ), " " ),
+					React.DOM.td(null, recipe.name),
+					React.DOM.td(null, recipe.type),
+					React.DOM.td(null, recipe.cook_time)
+				)
+			);
+		} else {
+			if(recipe.name.toLowerCase().indexOf(this.state.search.toLowerCase()) > -1) {
+				return (
+					React.DOM.tr(null, 
+						React.DOM.td(null,  " ", React.DOM.input( {type:"checkbox"} ), " " ),
+						React.DOM.td(null, recipe.name),
+						React.DOM.td(null, recipe.type),
+						React.DOM.td(null, recipe.cook_time)
+					)
+				);
+			}
+		}
 	},
 
 	render: function() {
 		return (
-			React.DOM.table( {className:"table"}, 
-				React.DOM.thead(null, 
-					React.DOM.tr(null, 
-						React.DOM.th(null),
-						React.DOM.th(null, "Recipe"),
-						React.DOM.th(null, "Type"),
-						React.DOM.th(null, "Cook Time")
-					)
+			React.DOM.div(null, 
+				React.DOM.div( {id:"search"}, 
+					React.DOM.input( {type:"text", className:"form-control", id:"searchBox", placeholder:"Search ...", value:this.state.search, onChange:this.handleChange} )
 				),
-				React.DOM.tbody(null, 
-					this.props.recipes.map(this.renderRecipe)
+				React.DOM.div(null, 
+					React.DOM.table( {className:"table"}, 
+						React.DOM.thead(null, 
+							React.DOM.tr(null, 
+								React.DOM.th(null),
+								React.DOM.th(null, "Recipe"),
+								React.DOM.th(null, "Type"),
+								React.DOM.th(null, "Cook Time")
+							)
+						),
+						React.DOM.tbody(null, 
+							this.props.recipes.map(this.renderRecipe)
+						)
+					)
 				)
 			)
-
 		);
   	}
 

@@ -4,37 +4,59 @@ var RecipeApp = React.createClass({
 
 	getInitialState: function() {	
 		return {
-			x: false
+			search: ''
 		};
 	},
 
+	handleChange: function(event) {
+		this.setState({search: event.target.value});
+	},
+
 	renderRecipe: function(recipe) {
-		return (
-			<tr>
-				<td> <input type="checkbox" /> </td>
-				<td>{recipe.name}</td>
-				<td>{recipe.type}</td>
-				<td>{recipe.cook_time}</td>
-			</tr>
-		);
+		if(this.state.search == '') {
+			return (
+				<tr>
+					<td> <input type="checkbox" /> </td>
+					<td>{recipe.name}</td>
+					<td>{recipe.type}</td>
+					<td>{recipe.cook_time}</td>
+				</tr>
+			);
+		} else {
+			if(recipe.name.toLowerCase().indexOf(this.state.search.toLowerCase()) > -1) {
+				return (
+					<tr>
+						<td> <input type="checkbox" /> </td>
+						<td>{recipe.name}</td>
+						<td>{recipe.type}</td>
+						<td>{recipe.cook_time}</td>
+					</tr>
+				);
+			}
+		}
 	},
 
 	render: function() {
 		return (
 			<div>
-				<table className="table">
-					<thead>
-						<tr>
-							<th></th>
-							<th>Recipe</th>
-							<th>Type</th>
-							<th>Cook Time</th>
-						</tr>
-					</thead>
-					<tbody>
-						{this.props.recipes.map(this.renderRecipe)}
-					</tbody>
-				</table>
+				<div id="search">
+					<input type="text" className="form-control" id="searchBox" placeholder="Search ..." value={this.state.search} onChange={this.handleChange} />
+				</div>
+				<div>
+					<table className="table">
+						<thead>
+							<tr>
+								<th></th>
+								<th>Recipe</th>
+								<th>Type</th>
+								<th>Cook Time</th>
+							</tr>
+						</thead>
+						<tbody>
+							{this.props.recipes.map(this.renderRecipe)}
+						</tbody>
+					</table>
+				</div>
 			</div>
 		);
   	}
